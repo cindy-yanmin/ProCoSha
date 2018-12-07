@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Manage Tags</title>
+</head>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<br><h1>Manage Tags</h1>
+    
+<p>Here are the content items proposed tags to you:</p>
+<table>
+	<th>Tagger Email</th>
+   	<th>Tag Time</th>
+   <th>Item ID</th>
+   	<th colspan="2">Manage Actions</th>
+    
+{% for line in data %}
+   	<tr>
+   		<td>{{line.email_tagger}}</td>
+   		<td>{{line.tagtime}}</td>
+   		<td>{{line.item_id}}</td>
+   		<td></br>
+           <form name="action" action="/update_tagged" method="POST" style="text-align: center;">
+           <input type="text" name="itemID" value={{line.item_id}} style="display: none;">
+           <input type="text" name="tagger" value={{line.email_tagger}} style="display: none;">
+           <input type="submit" name="actionAcc" value="ACCEPT"></form>
+   		</td>
+   		<td></br>
+           <form name="action" action="/remove_tagged" method="POST" style="text-align: center;">
+           <input type="text" name="itemID" value={{line.item_id}} style="display: none;">
+           <input type="text" name="tagger" value={{line.email_tagger}} style="display: none;">
+           <input type="submit" name="actionDec" value="DECLINE"></form>
+   		</td>
+   	</tr>
+{% endfor %}
+</table>
+
+<br><br>
+<a href="/home">Go Back</a>
+<br><br>
+<a href="/logout">Logout</a>
+
+</body>
+</html>

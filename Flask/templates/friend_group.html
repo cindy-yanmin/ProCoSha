@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>My Friend Groups</title>
+<style>
+.left {
+    width: 40%;
+    float: left;
+}
+.right {
+    width: 40%;
+    margin-right: 5%;
+    float: right;
+}
+table{
+    border: 1px solid black;
+    width: 100%;
+}
+th, td{
+    border: 1px solid black;
+    width: 33.33%;
+}
+</style>
+</head>
+
+<body>
+<div class="header">
+    <br><h1>{{name}}'s Friend Groups</h1>
+    <form id="group_form" action="/add_group" method="POST">
+    	Want to make a new friend group?</br>
+    	<input style="width: 30%;" type="text" name = "fgName" placeholder="Friend Group Name" required/>
+    	<input style="width: 30%;" type="text" name = "des" placeholder="Description"/>
+    	<input type="submit" value = ADD /></br>
+    </form>
+</div>
+{% if error %}
+    <p class="error" style="color:Red;"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+<div class="left">
+    <p>Here are the friend groups that you own:</p>
+    <table>
+        	<th>Group Name</th>
+        	<th>Members</th>
+        	<th>Add Friend</th>
+        {% for line in myGroup %}
+        	<tr>
+        		<td>{{line.fg_name}}<p style="color:#aaa;">{{line.description}}</p></td>
+        		<td>
+             {% for member in line.member %}
+            		{{member.fname}}, {{member.lname}}<br>
+             {% endfor %}</td>
+        		<td>
+            		<form action="/add_friend" method="POST" style="text-align: center;">
+            		<input type="text" name="fgName" value={{line.fg_name}} style="display: none;">
+            		<input type="text" name="fname" placeholder="First Name" required"></br>
+            		<input type="text" name="lname" placeholder="Last Name" required"></br>
+            		<input type="text" name="email" placeholder="Email (Optional)"></br>
+            		<input type="submit" name="add" value="ADD"></form>
+        		</td>
+        	</tr>
+        {% endfor %}
+        </table>
+    <p>Here are the friend groups that you belong to:</p>
+    <table>
+        	<th>Group Name</th>
+        	<th>Members</th>
+        	<th>Owner Email</th>
+        {% for line in otherGroup %}
+        	<tr>
+        		<td>{{line.fg_name}}<p style="color:#aaa;">{{line.description}}</p></td>
+        		<td>
+             {% for member in line.member %}
+            		{{member.fname}}, {{member.lname}}<br>
+             {% endfor %}</td>
+        		<td>{{line.owner_email}}</td>
+        	</tr>
+        {% endfor %}
+        </table>
+    <br><br>
+    <a href="/home">Go Back</a>
+    <br><br>
+    <a href="/logout">Logout</a>
+    <br><br>
+</div>
+
+<div class="right">
+
+    <p>Here are your private content items:</p>
+    <table>
+        	<th>Item Name</th>
+        	<th>File Path</th>
+        	<th>Share With</th>
+        {% for line in posts %}
+        	<tr>
+        		<td>{{line.item_name}}</td>
+        		<td>{{line.file_path}}</td>
+        		<td>
+            		<form action="/share_post" method="POST"> 
+                  <input type="text" name="itemID" value={{line.item_id}} style="display: none;">
+                  <select name="groups">
+                  {% for line in myGroup %}
+                    <option value={{line.owner_email}},{{line.fg_name}}>{{line.owner_email}}, {{line.fg_name}}</option>
+                  {% endfor %}
+                  {% for line in otherGroup %}
+                    <option value={{line.owner_email}},{{line.fg_name}}>{{line.owner_email}}, {{line.fg_name}}</option>
+                  {% endfor %}
+                  </select>
+                  <br><br>
+            		<input type="submit" name="share" value="SHARE"></form>
+        		</td>
+        	</tr>
+        {% endfor %}
+        </table>
+</div>
+
+</body>
+</html>
